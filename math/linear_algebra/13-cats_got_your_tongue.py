@@ -1,4 +1,6 @@
-import numpy as np
+#!/usr/bin/env python3
+"""Concate"""
+
 
 def np_cat(mat1, mat2, axis=0):
     """
@@ -7,8 +9,7 @@ def np_cat(mat1, mat2, axis=0):
     Args:
         mat1: A numpy.ndarray.
         mat2: A numpy.ndarray.
-        axis (int): Axis along which to concatenate the matrices. Default is 0.
-
+        axis (int): Axis along which to concatenate.
     Returns:
         numpy.ndarray: A new matrix containing the concatenated matrices.
     """
