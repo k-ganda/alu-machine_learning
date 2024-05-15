@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 """Numpy shape of array"""
-import numpy as np
 
 
 def np_shape(matrix):
