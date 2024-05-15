@@ -13,6 +13,4 @@ def cat_arrays(arr1, arr2):
         list: A new 2D list representing the concat of two arrays.
 
     """
-    result = []
-    result.append(arr1 + arr2)
-    return result
+    return arr1 + arr2
