@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """Concate"""
+import numpy as np
 
 
 def np_cat(mat1, mat2, axis=0):
@@ -13,9 +14,4 @@ def np_cat(mat1, mat2, axis=0):
     Returns:
         numpy.ndarray: A new matrix containing the concatenated matrices.
     """
-    if axis == 0:
-        return mat1 + mat2
-    elif axis == 1:
-        return [list(row1 + row2) for row1, row2 in zip(mat1, mat2)]
-    else:
-        return None
+    return np.concatenate((mat1, mat2), axis=axis)
