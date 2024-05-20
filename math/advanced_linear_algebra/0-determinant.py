@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 """Determinant of a matrix"""
-import numpy as np
 
 
 def determinant(matrix):
@@ -11,17 +10,17 @@ def determinant(matrix):
     Returns:
         Determinant of the matrix
     """
-    # Base cases for determinants of 0x0, 1x1, and 2x2 matrice
-    if matrix != [[]]:
+    if not isinstance(matrix, list) or not all(isinstance(row, list) for row in matrix):
         raise TypeError("matrix must be a list of lists")
-
-    if not all(len(row) == len(matrix) for row in matrix):
+    rows = len(matrix)
+    cols = len(matrix[0]) if rows > 0 else 0
+    if rows != cols:
         raise ValueError("matrix must be a square matrix")
-
-    if matrix == [[]]:
+    if rows == 0:
         return 1
-
-    np_matrix = np.array(matrix)
-    det = np.linalg.det(np_matrix)
-
-    return round(det)
+    if rows == 1:
+        return matrix[0][0]
+    det = 0
+    for c in range(cols):
+        det += ((-1) ** c) * matrix[0][c] * determinant([[matrix[r][c] for c in range(cols) if c != i] for i, r in enumerate(range(1, rows))])
+    return det
