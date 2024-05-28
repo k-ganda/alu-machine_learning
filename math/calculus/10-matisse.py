@@ -17,11 +17,12 @@ def poly_derivative(poly):
     [0]: If the derivative is 0
     new list of coefficients representing the derivative
     """
-    if not isinstance(poly, list):
+    derivative = []
+    if not isinstance(poly, list) or len(poly) == 0:
         return None
-    if not all(isinstance(coef, (int, float)) for coef in poly):
-        return None
-    if len(poly) <= 1:
+    if len(poly) == 1:
         return [0]
-    derivative = [i * coef for i, coef in enumerate(poly)][1:]
-    return derivative
+    for i in range(len(poly)-1, 0, -1):
+
+        derivative.append(poly[i]*i)
+    return derivative[::-1]

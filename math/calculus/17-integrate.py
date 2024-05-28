@@ -6,19 +6,21 @@ def poly_integral(poly, C=0):
     """
     Returns integral of polynomial
     """
-    if not isinstance(poly, list)
-    or not all(isinstance(coef, (int, float)) for coef in poly):
+    integral = []
+    # check for the validity of the inputs
+    if not isinstance(poly, list) or len(poly) == 0 or not isinstance(C, int):
         return None
-    if not isinstance(C, (int, float)):
-        return None
+    # calculate the cofficients
+    for i in range(len(poly)-1, 0, -1):
+        integral.append(poly[i]/(i+1))
 
-    integral = [C]
+    integral.append(poly[0])
+    integral.append(C)
+    # fit the output like on the intranet
+    if len(poly) == 1 and poly[0] == 0:
+        integral = [C]
+    for i in range(len(integral)):
+        if integral[i] % 1 == 0:
+            integral[i] = int(integral[i])
 
-    for i in range(len(poly)):
-        integral_coef = poly[i] / (i + 1)
-        if integral_coef.is_integer():
-            integral_coef = int(integral_coef)
-        integral.append(integral_coef)
-    while len(integral) > 1 and integral[-1] == 0:
-        integral.pop()
-    return integral
+    return integral[::-1]
