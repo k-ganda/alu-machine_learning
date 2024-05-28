@@ -9,10 +9,6 @@ def summation_i_squared(n):
     Returns:
     integer value of sum
     """
-    ssum = 0
-    if type(n) != int and type(n) != float:
+    if type(n) != int or n < 1:
         return None
-    else:
-        for i in range(n + 1):
-            ssum = ssum + i**2
-        return ssum
+    return n * (n + 1) * (2 * n +1) // 6
