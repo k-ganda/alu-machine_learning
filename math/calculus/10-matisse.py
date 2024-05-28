@@ -23,5 +23,5 @@ def poly_derivative(poly):
         return None
     if len(poly) <= 1:
         return [0]
-    derivative = [i * poly[i] for i in range(1, len(poly))]
+    derivative = [i * coef for i, coef in enumerate(poly)][1:]
     return derivative
