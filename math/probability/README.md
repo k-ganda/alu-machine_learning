@@ -1,0 +1,1 @@
+Probability;types of differentiations
