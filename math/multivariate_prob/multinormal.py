@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+"""Module numpy being imported"""
 import numpy as np
 """Class multinormal"""
 
@@ -19,6 +20,8 @@ class MultiNormal:
         d, n = data.shape
         if n < 2:
             raise ValueError("data must contain multiple data points")
+
         self.data = data
-        self.mean = np.mean(self.data, axis=0, keepdims=True)
-        self.cov = np.matmul((self.data - self.mean).T, self.data - self.mean) / (n - 1)
+        self.mean = np.mean(self.data, axis=1, keepdims=True)
+        centered_data = self.data - self.mean
+        self.cov = np.matmul(centered_data, centered_data.T) / (n - 1)
