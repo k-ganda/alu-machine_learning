@@ -3,6 +3,8 @@
 
 
 import numpy as np
+
+
 def mean_cov(X):
     """
     Calulating the mean of a covariance matrix
@@ -18,8 +20,9 @@ def mean_cov(X):
     cov is a numpy.ndarray of shape (d, d)
     containing the covariance matrix of the data set
     """
-    if not isinstance(X, np.array) or len(X.shape) != 2:
+    if not isinstance(X, np.ndarray) or X.ndim != 2:
         raise TypeError("X must b a 2D numpy.ndarray")
+    n, d = X.shape
     if n < 2:
         raise ValueError("X must contain multiple data points")
     mean = np.mean(X, axis=0, keepdims=True)

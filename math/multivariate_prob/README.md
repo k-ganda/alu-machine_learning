@@ -1,1 +1,1 @@
-multivariate_prob ; Mean, covariance, variance
+mulivariate probability
