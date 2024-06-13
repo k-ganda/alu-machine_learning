@@ -23,8 +23,8 @@ class MultiNormal:
 
         self.data = data
         self.mean = np.mean(self.data, axis=1, keepdims=True)
-        centered_data = self.data - self.mean
-        self.cov = np.matmul(centered_data, centered_data.T) / (n - 1)
+        cov = np.matmul(data - self.mean, data.T) / (data.shape[1] - 1)
+        self.cov = cov
 
     def pdf(self, x):
         """
