@@ -22,7 +22,8 @@ class MultiNormal:
             raise ValueError("data must contain multiple data points")
 
         self.data = data
-        self.mean = np.mean(self.data, axis=1, keepdims=True)
+        mean = np.mean(data, axis=1).reshape(data.shape[0], 1)
+        self.mean = mean
         cov = np.matmul(data - self.mean, data.T) / (data.shape[1] - 1)
         self.cov = cov
 
