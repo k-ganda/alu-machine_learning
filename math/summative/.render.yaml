@@ -1,0 +1,6 @@
+services:
+  - type: web
+    name: price-prediction-model
+    env: python
+    buildCommand: 'pip install -r math/summative/requirements.txt'
+    startCommand: 'cd math/summative && uvicorn main:app --host 0.0.0.0 --port $PORT'
