@@ -130,9 +130,8 @@ class NeuralNetwork:
             raise TypeError("alpha must be a float")
         if alpha <= 0:
             raise ValueError("alpha must be positive")
-        for i in range(iterations):
+        for iteration in range(iterations):
             A1, A2 = self.forward_prop(X)
             self.gradient_descent(X, Y, A1, A2, alpha)
-            if i % 100 == 0:
-                cost = self.cost(Y, A2)
-                print(f"Cost after {i} iterations: {cost}")
+
+        return self.evaluate(X, Y)
