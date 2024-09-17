@@ -20,7 +20,7 @@ def create_layer(prev, n, activation):
     # Create the layer
     layer = tf.layers.dense(inputs=prev,
                             units=n,
-                            activation=tf.nn.__dict__.get(activation, None),
+                            activation=activation,
                             kernel_initializer=initializer,
                             name='layer')
     return layer
