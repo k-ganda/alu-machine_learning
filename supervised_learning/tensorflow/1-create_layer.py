@@ -14,10 +14,10 @@ def create_layer(prev, n, activation):
     initializer = tf.contrib.layers.variance_scaling_initializer(
         mode="FAN_AVG")
 
-    #Creating the layer
+    # Creating the layer
     layer = tf.layers.dense(inputs=prev,
                             units=n,
                             activation=activation,
                             kernel_initializer=initializer,
-                            name="layer")
+                            name=name)
     return layer
