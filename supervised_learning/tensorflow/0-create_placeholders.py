@@ -12,8 +12,8 @@ def create_placeholders(nx, classes):
     x: Placeholder for input
     y: placeholder for one-hot labels(input)
     """
-    x = tf.placeholder(tf.float32, shape=(None, nx),
+    X = tf.placeholder(tf.float32, shape=(None, nx),
                        name="x")
-    y = tf.placeholder(tf.float32, shape=(None, classes),
+    Y = tf.placeholder(tf.float32, shape=(None, classes),
                        name="y")
-    return x, y
+    return X, Y
