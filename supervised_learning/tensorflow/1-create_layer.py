@@ -10,13 +10,14 @@ def create_layer(prev, n, activation):
     activation: activation function
     Returns: tensor output
     """
-    initializer = tf.contrib.layers.
-    variance_scaling_initializer(mode="FAN_AVG")
-    layer = tf.layers.Dense(
-            inputs=prev,
-            units=n,
-            activation=activation,
-            kernel_initializer=initializer,
-            name="layer"
-            )
+    # He et al initializer for weights
+    initializer = tf.contrib.layers.variance_scaling_initializer(
+        mode="FAN_AVG")
+
+    #Creating the layer
+    layer = tf.layers.dense(inputs=prev,
+                            units=n,
+                            activation=activation,
+                            kernel_initializer=initializer,
+                            name="layer")
     return layer
