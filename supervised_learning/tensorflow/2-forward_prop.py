@@ -13,17 +13,15 @@ def forward_prop(x, layer_sizes=[], activations=[]):
     activations: activation function for that layer
     Returns: tensor of the final layer's output
     """
-    # Initialize the input tensor
-    prev = x
 
     # Ensure that layer_sizes and activations are of the same length
-    if len(layer_sizes) != len(activations):
-        raise ValueError("The length of layer_sizes must
-                         match the length of activations")
+    assert len(layer_sizes) == len(
+        activations), "Layer sizes and activations count must be the same."
 
-    # Create each layer using create_layer function
+    prev = x
+
     for i in range(len(layer_sizes)):
-        prev = create_layer(prev, layer_sizes[i], activations[i])
+        with tf.variable_scope("layer_" + str(i)):
+            a = create_layer(a, layer_sizes[i], activations[i])
 
-    # The final tensor is the prediction of the network
-    return prev
+    return a
