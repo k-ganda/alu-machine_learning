@@ -11,6 +11,6 @@ def calculate_loss(y, y_pred):
     Returns: Tensor containing loss
     """
     loss = tf.reduce_mean(
-        tf.losses.softmax_cross_entropy(
-           labels=y, logits=y_pred))
+        tf.nn.softmax_cross_entropy_with_logits_v2(
+            labels=y, logits=y_pred))
     return loss
