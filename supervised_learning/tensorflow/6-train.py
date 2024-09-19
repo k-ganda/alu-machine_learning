@@ -23,9 +23,6 @@ def train(X_train, Y_train, X_valid, Y_valid, layer_sizes,
     save_path designates where to save the model
     """
 
-    # Setting random seed
-    tf.set_random_seed(42)
-
     # Creating placeholders for input data and labels
     nx = X_train.shape[1]
     classes = Y_train.shape[1]
