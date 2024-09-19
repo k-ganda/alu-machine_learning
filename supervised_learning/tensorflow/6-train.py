@@ -56,12 +56,10 @@ def train(X_train, Y_train, X_valid, Y_valid, layer_sizes,
         sess.run(init)
 
         # Training loop
-<<<<<<< HEAD
         for epoch in range(iterations):
             epoch_loss = 0
-            # Code to process x_train, y_train in batches
-            # And run optimizer and calculate loss
 
+            # Process x_train
             _, epoch_loss = sess.run([train_op, loss], feed_dict={
                                      x: X_train, y: Y_train})
 
@@ -84,30 +82,6 @@ def train(X_train, Y_train, X_valid, Y_valid, layer_sizes,
             sess.run(train_op, feed_dict={x: X_train, y: Y_train})
 
             epoch += 1
-=======
-        for epoch in range(iterations + 1):  # Include the 0th iteration
-            # Run the optimizer and calculate the loss
-            _, epoch_loss = sess.run([train_op, loss], feed_dict={x: X_train, y: Y_train})
-
-            # Every 100 iterations (including 0th), print the training and validation stats
-            if epoch % 100 == 0:
-                # Calculate training accuracy
-                epoch_accuracy = sess.run(accuracy, feed_dict={x: X_train, y: Y_train})
-                
-                # Calculate validation loss and accuracy
-                valid_loss = sess.run(loss, feed_dict={x: X_valid, y: Y_valid})
-                valid_accuracy = sess.run(accuracy, feed_dict={x: X_valid, y: Y_valid})
-
-                # Print the progress
-                print(f"After {epoch} iterations:")
-                print(f"\tTraining Cost: {epoch_loss}")
-                print(f"\tTraining Accuracy: {epoch_accuracy}")
-                print(f"\tValidation Cost: {valid_loss}")
-                print(f"\tValidation Accuracy: {valid_accuracy}")
-
-        # After training, save the model
->>>>>>> 55dbee22ce67b3efc9985348f8b3e50c52ce442c
         save_path = saver.save(sess, save_path)
 
-    # Return the path where the model was saved
     return save_path
