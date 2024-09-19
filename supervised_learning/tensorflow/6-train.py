@@ -58,29 +58,28 @@ def train(X_train, Y_train, X_valid, Y_valid, layer_sizes,
         # Training loop
         for epoch in range(iterations):
             epoch_loss = 0
-            # Code to process x_train, y_train in batches
-            # And run optimizer and calculate loss
+            # Running optimizer and loss
 
             _, epoch_loss = sess.run([train_op, loss], feed_dict={
-                                     X: X_train, Y: Y_train})
+                                     x: X_train, y: Y_train})
 
             epoch_accuracy = sess.run(
-                accuracy, feed_dict={X: X_train, Y: Y_train})
+                accuracy, feed_dict={x: X_train, y: Y_train})
 
-            valid_loss = sess.run(loss, feed_dict={X: X_valid, Y: Y_valid})
+            valid_loss = sess.run(loss, feed_dict={x: X_valid, y: Y_valid})
 
             valid_accuracy = sess.run(
                 accuracy, feed_dict={X: X_valid, Y: Y_valid})
 
             # if epoch % 100 == 0:
-            if epoch % 100 is 0:
+            if epoch % 100 == 0:
                 print("After {} iterations:".format(epoch))
                 print("\tTraining Cost: {}".format(epoch_loss))
                 print("\tTraining Accuracy: {}".format(epoch_accuracy))
                 print("\tValidation Cost: {}".format(valid_loss))
                 print("\tValidation Accuracy: {}".format(valid_accuracy))
 
-            sess.run(train_op, feed_dict={X: X_train, Y: Y_train})
+            sess.run(train_op, feed_dict={x: X_train, y: Y_train})
 
             epoch += 1
         save_path = saver.save(sess, save_path)
