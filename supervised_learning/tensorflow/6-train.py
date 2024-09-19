@@ -70,7 +70,6 @@ def train(X_train, Y_train, X_valid, Y_valid, layer_sizes,
                 print("\tTraining Accuracy: {}".format(epoch_accuracy))
                 print("\tValidation Cost: {}".format(valid_loss))
                 print("\tValidation Accuracy: {}".format(valid_accuracy))
-            sess.run(train_op, feed_dict={x: X_train, y: Y_train})
             epoch += 1
         save_path = saver.save(sess, save_path)
     return save_path
