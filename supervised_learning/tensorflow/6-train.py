@@ -48,7 +48,7 @@ def train(X_train, Y_train, X_valid, Y_valid, layer_sizes,
     with tf.Session() as sess:
         sess.run(init)
         # Training loop
-        for epoch in range(iterations):
+        for epoch in range(iterations + 1):
             epoch_loss = 0
             # Code to process x_train, y_train in batches
             # And run optimizer and calculate loss
