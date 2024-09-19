@@ -6,8 +6,6 @@ calculate_loss = __import__('4-calculate_loss').calculate_loss
 create_placeholders = __import__('0-create_placeholders').create_placeholders
 create_train_op = __import__('5-create_train_op').create_train_op
 forward_prop = __import__('2-forward_prop').forward_prop
-
-
 def train(X_train, Y_train, X_valid, Y_valid, layer_sizes,
           activations, alpha, iterations, save_path="/tmp/model.ckpt"):
     """
@@ -26,17 +24,13 @@ def train(X_train, Y_train, X_valid, Y_valid, layer_sizes,
     nx = X_train.shape[1]
     classes = Y_train.shape[1]
     x, y = create_placeholders(nx, classes)
-
     # Building forward prop graph
     y_pred = forward_prop(x, layer_sizes, activations)
-
     # Calculate loss and accuracy
     loss = calculate_loss(y, y_pred)
     accuracy = calculate_accuracy(y, y_pred)
-
     # define optimizer &train op
     train_op = create_train_op(loss, alpha)
-
     # Adding placeholders, tensors, operation to collection
     tf.add_to_collection('x', x)
     tf.add_to_collection('y', y)
@@ -44,33 +38,25 @@ def train(X_train, Y_train, X_valid, Y_valid, layer_sizes,
     tf.add_to_collection('loss', loss)
     tf.add_to_collection('accuracy', accuracy)
     tf.add_to_collection('train_op', train_op)
-
     # Initialize the variables
     init = tf.global_variables_initializer()
-
     # Create a Saver object to save the model
     saver = tf.train.Saver()
-
     # Start the session
     with tf.Session() as sess:
         sess.run(init)
-
         # Training loop
         for epoch in range(iterations):
             epoch_loss = 0
-
-            # Process x_train
+            # Code to process x_train, y_train in batches
+            # And run optimizer and calculate loss
             _, epoch_loss = sess.run([train_op, loss], feed_dict={
-                                     x: X_train, y: Y_train})
-
+                                     X: X_train, Y: Y_train})
             epoch_accuracy = sess.run(
-                accuracy, feed_dict={x: X_train, y: Y_train})
-
-            valid_loss = sess.run(loss, feed_dict={x: X_valid, y: Y_valid})
-
+                accuracy, feed_dict={X: X_train, Y: Y_train})
+            valid_loss = sess.run(loss, feed_dict={X: X_valid, Y: Y_valid})
             valid_accuracy = sess.run(
-                accuracy, feed_dict={x: X_valid, y: Y_valid})
-
+                accuracy, feed_dict={X: X_valid, Y: Y_valid})
             # if epoch % 100 == 0:
             if epoch % 100 is 0:
                 print("After {} iterations:".format(epoch))
@@ -78,10 +64,7 @@ def train(X_train, Y_train, X_valid, Y_valid, layer_sizes,
                 print("\tTraining Accuracy: {}".format(epoch_accuracy))
                 print("\tValidation Cost: {}".format(valid_loss))
                 print("\tValidation Accuracy: {}".format(valid_accuracy))
-
-            sess.run(train_op, feed_dict={x: X_train, y: Y_train})
-
+            sess.run(train_op, feed_dict={X: X_train, Y: Y_train})
             epoch += 1
         save_path = saver.save(sess, save_path)
-
     return save_path
