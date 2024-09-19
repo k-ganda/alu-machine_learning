@@ -56,32 +56,28 @@ def train(X_train, Y_train, X_valid, Y_valid, layer_sizes,
         sess.run(init)
 
         # Training loop
-        for epoch in range(iterations):
-            epoch_loss = 0
-            # Running optimizer and loss
+        for epoch in range(iterations + 1):  # Include the 0th iteration
+            # Run the optimizer and calculate the loss
+            _, epoch_loss = sess.run([train_op, loss], feed_dict={x: X_train, y: Y_train})
 
-            _, epoch_loss = sess.run([train_op, loss], feed_dict={
-                                     x: X_train, y: Y_train})
-
-            epoch_accuracy = sess.run(
-                accuracy, feed_dict={x: X_train, y: Y_train})
-
-            valid_loss = sess.run(loss, feed_dict={x: X_valid, y: Y_valid})
-
-            valid_accuracy = sess.run(
-                accuracy, feed_dict={X: X_valid, Y: Y_valid})
-
-            # if epoch % 100 == 0:
+            # Every 100 iterations (including 0th), print the training and validation stats
             if epoch % 100 == 0:
-                print("After {} iterations:".format(epoch))
-                print("\tTraining Cost: {}".format(epoch_loss))
-                print("\tTraining Accuracy: {}".format(epoch_accuracy))
-                print("\tValidation Cost: {}".format(valid_loss))
-                print("\tValidation Accuracy: {}".format(valid_accuracy))
+                # Calculate training accuracy
+                epoch_accuracy = sess.run(accuracy, feed_dict={x: X_train, y: Y_train})
+                
+                # Calculate validation loss and accuracy
+                valid_loss = sess.run(loss, feed_dict={x: X_valid, y: Y_valid})
+                valid_accuracy = sess.run(accuracy, feed_dict={x: X_valid, y: Y_valid})
 
-            sess.run(train_op, feed_dict={x: X_train, y: Y_train})
+                # Print the progress
+                print(f"After {epoch} iterations:")
+                print(f"\tTraining Cost: {epoch_loss}")
+                print(f"\tTraining Accuracy: {epoch_accuracy}")
+                print(f"\tValidation Cost: {valid_loss}")
+                print(f"\tValidation Accuracy: {valid_accuracy}")
 
-            epoch += 1
+        # After training, save the model
         save_path = saver.save(sess, save_path)
 
+    # Return the path where the model was saved
     return save_path
