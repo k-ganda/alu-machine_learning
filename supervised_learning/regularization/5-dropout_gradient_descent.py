@@ -17,10 +17,14 @@ def dropout_gradient_descent(Y, weights, cache, alpha, keep_prob, L):
         W = weights['W' + str(i)]
         b = weights['b' + str(i)]
         if i == L:
+            # For ouput layer
             dZ = A - Y
         else:
+            # For hidden layers(tanhz)
             dZ = dA * (1 - (A ** 2))
+            # Apply dropout to gradient element-wise
             dZ = np.multiply(dZ, cache['D' + str(i)])
+            # Rescale gradients to account for dropped neurons
             dZ /= keep_prob
         dW = (1 / m) * np.matmul(dZ, A_prev.T)
         db = (1 / m) * np.sum(dZ, axis=1, keepdims=True)
