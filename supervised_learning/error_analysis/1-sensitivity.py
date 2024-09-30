@@ -13,6 +13,6 @@ def sensitivity(confusion):
     """
     classes = confusion.shape[0]
     sensitivity = np.zeros(classes)
-    for i in rage(classes):
+    for i in range(classes):
         sensitivity[i] = confusion[i, i] / np.sum(confusion[i])
     return sensitivity
