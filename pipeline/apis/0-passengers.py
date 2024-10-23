@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+"""Importing requests"""
 import requests
 """
 Module containin a function
