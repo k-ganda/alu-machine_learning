@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+import requests
 """
 Module containin a function
 to return list of ships
@@ -12,17 +13,21 @@ def availableShips(passengerCount):
     if no ship available
     return empty list
     """
-    import requests
     url = 'https://swapi-api.alx-tools.com/api/starships/'
-    response = requests.get(url)
-    data = response.json()
     ships = []
+    while url:
+        # Fetch data from the API
+        response = requests.get(url)
+        data = response.json()
 
-    for result in data['results']:
-        if result['passengers'] != "n/a":
-            passengers_no = int(result['passengers'].replace(',', ''))
-            # print(passengers_no)
-            if passengers_no >= passengerCount:
-                ships.append(result['name'])
+        # Loop through each ship in the current page
+        for ship in data['results']:
+            # Check if the passenger field is known and a valid number
+            passengers = ship['passengers']
+            if passengers.isdigit():  # Some may be 'unknown'
+                if int(passengers) >= passengerCount:
+                    ships.append(ship['name'])
 
+        # Move to the next page (if any)
+        url = data['next']
     return ships
