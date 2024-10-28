@@ -2,7 +2,7 @@
 -- Ranked by longevity
 SELECT 
     band_name,
-    (2020 - formed) - (CASE WHEN split IS NOT NULL THEN split - formed ELSE 0 END) AS lifespan
+    IFNULL(split, 2020) - formed AS lifespan
 FROM metal_bands
 WHERE style LIKE '%Glam rock%'
 ORDER BY lifespan DESC;
