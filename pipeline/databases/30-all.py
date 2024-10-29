@@ -12,5 +12,5 @@ def list_all(mongo_collection):
     docs = []
     collection = mongo_collection.find()
     for doc in collection:
-        dosc.append(doc)
+        docs.append(doc)
     return docs
