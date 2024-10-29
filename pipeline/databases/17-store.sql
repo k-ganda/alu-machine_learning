@@ -7,7 +7,7 @@ FOR EACH ROW
 BEGIN
 	IF EXISTS (SELECT 1 FROM items WHERE name = NEW.item_name) THEN
         UPDATE items
-        SET quantity = quantity - NEW.quantity
+        SET quantity = quantity - 1
         WHERE name = NEW.item_name;
     END IF;
 END;
