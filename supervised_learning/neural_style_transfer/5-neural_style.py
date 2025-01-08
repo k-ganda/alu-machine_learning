@@ -259,8 +259,8 @@ class NST:
             raise TypeError(
                 "style_outputs must be a list with a length of {}".format(
                     length))
-        weight = 1 / length
-        style_cost = 0
+        weight = 1.0 / length
+        style_cost = 0.0
         for i in range(length):
             style_cost += (
                 self.layer_style_cost(style_outputs[i],
