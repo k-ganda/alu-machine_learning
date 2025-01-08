@@ -246,7 +246,7 @@ class NST:
             )
 
         weight = 1 / length
-        style_cost = 0.0
+        style_cost = 0
 
         for i in range(length):
             style_cost += weight * self.layer_style_cost(
