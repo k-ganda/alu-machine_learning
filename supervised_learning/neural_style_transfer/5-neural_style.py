@@ -1,9 +1,7 @@
 #!/usr/bin/env python3
 """
-Defines class NST that performs tasks for neural style transfer
+Import modules
 """
-
-
 import numpy as np
 import tensorflow as tf
 
@@ -249,8 +247,8 @@ class NST:
         style_cost = 0
 
         for i in range(length):
-            style_cost += weight * self.layer_style_cost(
-                style_outputs[i], self.gram_style_features[i]
-            )
+            style_cost += (
+                self.layer_style_cost(style_outputs[i],
+                                      self.gram_style_features[i]) * weight)
 
         return style_cost
