@@ -247,8 +247,13 @@ class NST:
         style_cost = 0
 
         for i in range(length):
-            style_cost += (
-                self.layer_style_cost(style_outputs[i],
-                                      self.gram_style_features[i]) * weight)
+            print(f"Layer {i} - Style Output Shape: {style_outputs[i].shape}")
+            print(f"Layer {i} - Gram Style Feature Shape: {self.gram_style_features[i].shape}")
 
-        return style_cost
+            layer_cost = self.layer_style_cost(style_outputs[i], self.gram_style_features[i])
+            print(f"Layer {i} - Layer Cost: {layer_cost.numpy()}")
+
+            style_cost += layer_cost * weight
+
+    print(f"Final Style Cost: {style_cost.numpy()}")
+    return style_cost
