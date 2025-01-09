@@ -152,9 +152,6 @@ class NST:
             raise TypeError("input_layer must be a tensor of rank 4")
 
         _, h, w, c = input_layer.shape
-        product = int(h * w)
-        features = tf.reshape(input_layer, (product, c))
+        features = tf.reshape(input_layer, (h * w, c))
         gram = tf.matmul(features, features, transpose_a=True)
-        gram = tf.expand_dims(gram, axis=0)
-        gram /= tf.cast(product, tf.float32)
-        return (gram)
+        return tf.expand_dims(gram, axis=0)
