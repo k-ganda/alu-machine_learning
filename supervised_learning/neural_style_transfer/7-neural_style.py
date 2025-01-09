@@ -281,8 +281,11 @@ class NST:
             raise TypeError(
                 "generated_image must be a tensor of shape {}".format(shape)
             )
-        J_content = self.content_cost(generated_image)
-        J_style = self.style_cost(generated_image)
+        model_outputs = self.model(generated_image)
+        style_outputs = model_outputs[:-1]
+        content_output = model_outputs[-1]
+        J_content = self.content_cost(content_output)
+        J_style = self.style_cost(style_outputs)
         alpha = self.alpha
         beta = self.beta
         J = alpha * J_content + beta * J_style
