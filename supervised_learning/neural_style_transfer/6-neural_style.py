@@ -259,11 +259,23 @@ class NST:
         '''
             Calculates the content cost for generated image
         '''
+<<<<<<< HEAD
         shape = self.content_feature.shape
         if not isinstance(content_output, (tf.Tensor, tf.Variable)) or \
            content_output.shape != shape:
             raise TypeError(
                 "content_output must be a tensor of shape {}".format(shape))
+=======
+        if not isinstance(content_output, (tf.Tensor, tf.Variable)):
+        raise TypeError("content_output must be a tensor")
+    
+        expected_shape = self.content_feature.shape
+        if content_output.shape != expected_shape:
+            raise TypeError(
+                f"content_output must be a tensor of shape {expected_shape}"
+            )
+    
+>>>>>>> 78debab3d7651d2d2aaca77f73754cae5dd25530
         content_cost = tf.reduce_mean(
             tf.square(content_output - self.content_feature)
         )
