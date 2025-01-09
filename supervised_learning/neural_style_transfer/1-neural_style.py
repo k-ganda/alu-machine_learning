@@ -59,8 +59,7 @@ class NST:
         self.content_image = self.scale_image(content_image)
         self.alpha = alpha
         self.beta = beta
-
-        self.load_model()
+        self.model = self.load_model()
 
     @staticmethod
     def scale_image(image):
@@ -97,7 +96,7 @@ class NST:
 
         resized = tf.image.resize_bicubic(np.expand_dims(image, axis=0),
                                           size=(h_new, w_new))
-        rescaled = resized / 255
+        rescaled = resized / 255.0
         rescaled = tf.clip_by_value(rescaled, 0, 1)
         return (rescaled)
 
@@ -111,26 +110,12 @@ class NST:
             _layer
             saves the model in the instance attribute model
         '''
-        VGG19_model = tf.keras.applications.VGG19(include_top=False,
+        vgg = tf.keras.applications.VGG19(include_top=False,
                                                   weights='imagenet')
-        VGG19_model.save("VGG19_base_model")
-        custom_objects = {'MaxPooling2D': tf.keras.layers.AveragePooling2D}
+        vgg.trainable = False
 
-        vgg = tf.keras.models.load_model("VGG19_base_model",
-                                         custom_objects=custom_objects)
+        outputs = [vgg.get_layer(layer).output for layer in self.style_layers]
+        outputs.append(vgg.get_layer(self.content_layer).output)
 
-        style_outputs = []
-        content_output = None
-
-        for layer in vgg.layers:
-            if layer.name in self.style_layers:
-                style_outputs.append(layer.output)
-            if layer.name in self.content_layer:
-                content_output = layer.output
-
-            layer.trainable = False
-
-        outputs = style_outputs + [content_output]
-
-        model = tf.keras.models.Model(vgg.input, outputs)
-        self.model = model
+        self.model = tf.keras.models.Model(inputs=vgg.input, outputs=outputs)
+        
