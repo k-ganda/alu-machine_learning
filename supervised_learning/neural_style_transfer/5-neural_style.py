@@ -93,8 +93,8 @@ class NST:
         self.content_image = self.scale_image(content_image)
         self.alpha = alpha
         self.beta = beta
-        self.load_model()
-        self.generate_features()
+        self.model = self.load_model()
+        self.gram_style_features, self.content_feature = self.generate_features()
 
     @staticmethod
     def scale_image(image):
@@ -131,8 +131,8 @@ class NST:
 
         resized = tf.image.resize_bicubic(np.expand_dims(image, axis=0),
                                           size=(h_new, w_new))
-        rescaled = resized / 255
-        rescaled = tf.clip_by_value(rescaled, 0, 1)
+        rescaled = resized / 255.0
+        rescaled = tf.clip_by_value(rescaled, 0.0, 1.0)
         return (rescaled)
 
     def load_model(self):
@@ -147,27 +147,11 @@ class NST:
         """
         VGG19_model = tf.keras.applications.VGG19(include_top=False,
                                                   weights='imagenet')
-        VGG19_model.save("VGG19_base_model")
-        custom_objects = {'MaxPooling2D': tf.keras.layers.AveragePooling2D}
-
-        vgg = tf.keras.models.load_model("VGG19_base_model",
-                                         custom_objects=custom_objects)
-
-        style_outputs = []
-        content_output = None
-
-        for layer in vgg.layers:
-            if layer.name in self.style_layers:
-                style_outputs.append(layer.output)
-            if layer.name in self.content_layer:
-                content_output = layer.output
-
-            layer.trainable = False
-
-        outputs = style_outputs + [content_output]
-
-        model = tf.keras.models.Model(vgg.input, outputs)
-        self.model = model
+        VGG19_model.trainable = False
+        style_outputs = [VGG19_model.get_layer(name).output for name in self.style_layers]
+        content_output = VGG19_model.get_layer(self.content_layer).output
+        model_outputs = style_outputs + [content_output]
+        return tf.keras.models.Model(VGG19_model.input, model_outputs)
 
     @staticmethod
     def gram_matrix(input_layer):
@@ -192,7 +176,7 @@ class NST:
         gram = tf.matmul(features, features, transpose_a=True)
         gram = tf.expand_dims(gram, axis=0)
         gram /= tf.cast(product, tf.float32)
-        return (gram)
+        return gram
 
     def generate_features(self):
         """
@@ -201,21 +185,14 @@ class NST:
         Sets public instance attribute:
             gram_style_features and content_feature
         """
-        VGG19_model = tf.keras.applications.vgg19
-        preprocess_style = VGG19_model.preprocess_input(
-            self.style_image * 255)
-        preprocess_content = VGG19_model.preprocess_input(
-            self.content_image * 255)
+        style_image_outputs = self.model(self.style_image)
+        content_image_outputs = self.model(self.content_image)
 
-        style_features = self.model(preprocess_style)[:-1]
-        content_feature = self.model(preprocess_content)[-1]
+        style_outputs = style_image_outputs[:len(self.style_layers)]
+        content_output = content_image_outputs[len(self.style_layers):][0]
 
-        gram_style_features = []
-        for feature in style_features:
-            gram_style_features.append(self.gram_matrix(feature))
-
-        self.gram_style_features = gram_style_features
-        self.content_feature = content_feature
+        gram_style_features = [self.gram_matrix(output) for output in style_outputs]
+        return gram_style_features, content_output
 
     def layer_style_cost(self, style_output, gram_target):
         """
@@ -261,21 +238,9 @@ class NST:
                     length))
         weight = 1.0 / length
         style_cost = 0.0
-        for i in range(length):
-<<<<<<< HEAD
-            print(f"Style Output Shape: {style_outputs[i].shape}")
-            print(f"Gram Style Feature Shape: {self.gram_style_features[i].shape}")
+        
+        for style_output, gram_target in zip(style_outputs, self.gram_style_features):
+            style_cost += weight * self.layer_style_cost(style_output, gram_target)
 
-            layer_cost = self.layer_style_cost(style_outputs[i], self.gram_style_features[i])
-            print(f"Layer {i} - Layer Cost: {layer_cost.numpy()}")
-
-            style_cost += layer_cost * weight
-
-    print(f"Final Style Cost: {style_cost.numpy()}")
-    return style_cost
-=======
-            style_cost += (
-                self.layer_style_cost(style_outputs[i],
-                                      self.gram_style_features[i]) * weight)
         return style_cost
->>>>>>> 78debab3d7651d2d2aaca77f73754cae5dd25530
+        
