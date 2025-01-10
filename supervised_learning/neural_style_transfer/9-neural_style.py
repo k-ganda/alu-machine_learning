@@ -172,7 +172,7 @@ class NST:
         if not (isinstance(input_layer, tf.Tensor) or
                 isinstance(input_layer, tf.Variable)) or len(
                     input_layer.shape
-                ) != 4:
+        ) != 4:
             raise TypeError("input_layer must be a tensor of rank 4")
 
         _, h, w, c = input_layer.shape
@@ -259,103 +259,64 @@ class NST:
         '''
             Calculates the content cost for generated image
         '''
-        shape = self.content_feature.shape
-        if not isinstance(content_output, (tf.Tensor, tf.Variable)) or \
-           content_output.shape != shape:
-            raise TypeError(
-                "content_output must be a tensor of shape {}".format(shape))
+        if not isinstance(content_output, tf.Tensor) or len(
+                content_output.shape) != 4:
+            raise TypeError("content_output must be a tensor of rank 4")
         content_cost = tf.reduce_mean(
             tf.square(content_output - self.content_feature)
         )
         return content_cost
 
     def total_cost(self, generated_image):
-        """
-        Calculates total cost of gen image
-        Params: Gen image(1, nh, nw, 3)
-        Returns: (J, Jcotent, Jstyle)
-        """
-        shape = self.content_image.shape
-        if not isinstance(generated_image, (tf.Tensor, tf.Variable)) or \
-           generated_image.shape != shape:
+        '''
+            Calculates the total cost for generated image
+        '''
+        if not isinstance(generated_image, tf.Tensor) or len(
+                generated_image.shape) != 4:
             raise TypeError(
-                "generated_image must be a tensor of shape {}".format(shape)
+                "content_output must be a tensor of shape {}".format(
+                    generated_image.shape
+                )
             )
-        model_outputs = self.model(generated_image)
-        style_outputs = model_outputs[:-1]
-        content_output = model_outputs[-1]
-        J_content = self.content_cost(content_output)
-        J_style = self.style_cost(style_outputs)
-        alpha = self.alpha
-        beta = self.beta
-        J = alpha * J_content + beta * J_style
-
-        return J, J_content, J_style
 
     def compute_grads(self, generated_image):
-        """
-        Calculates gradients of generated image
-        """
-        shape = self.content_image.shape
-        if not isinstance(generated_image, (tf.Tensor, tf.Variable)) or \
-           generated_image.shape != shape:
+        '''
+            Calculates the gradients for the tf.Tensor
+            generated image of shape (1, nh, nw, 3)
+        '''
+        if not isinstance(generated_image, tf.Tensor) or len(
+                generated_image.shape) != 4:
             raise TypeError(
-                "generated_image must be a tensor of shape {}".format(shape))
+                "content_output must be a tensor of shape {}".format(
+                    generated_image.shape
+                )
+            )
 
-        with tf.GradientTape() as tape:
-            tape.watch(generated_image)
-            J_total, J_content, J_style = self.total_cost(generated_image)
+    def generate_image(self, iterations=1000, step=None, lr=0.01, beta1=0.9, beta2=0.99):
+        '''
+            Generates the neural style transfered image
 
-        gradients = tape.gradient(J_total, generated_image)
-        return gradients, J_total, J_content, J_style
+            parameters:
+                iterations [int]: the number of iterations to optimize the image
+                step [int]: the step to print information about the optimization
+                lr [float]: the learning rate
+                beta1 [float]: the beta1 parameter for Adam optimization
+                beta2 [float]: the beta2 parameter for Adam optimization
 
-    def generate_image(self, iterations=1000, step=None, lr=0.01,
-                       beta1=0.9, beta2=0.99):
-        """
-        Generates neural style transferred image
-        """
-        if type(iterations) is not int:
-            raise TypeError("iterations must be an integer")
-        if iterations < 0:
-            raise valueError("iterations must be positive")
-        if step is not None and type(step) is not int:
-            raise TypeError("step must be an integer")
-        if step is not None and (step < 0 or step > iterations):
-            raise ValueError("step must be positive and less than iterations")
-        if type(lr) is not int and type(lr) is not float:
-            raise TypeError("lr must be a number")
-        if lr < 0:
-            raise ValueError("lr must be positive")
-        if type(beta1) is not float:
-            raise TypeError("beta1 must be a float")
-        if beta1 < 0 or beta1 > 1:
-            raise ValueError("beta1 must be in the range [0, 1]")
-        if type(beta2) is not float:
-            raise TypeError("beta2 must be a float")
-        if beta2 < 0 or beta2 > 1:
-            raise ValueError("beta2 must be in the range [0, 1]")
+            returns:
+                generated_image, cost
+        '''
+        if not isinstance(iterations, int) or iterations <= 0:
+            raise TypeError("iterations must be a positive integer")
+        if not isinstance(lr, (int, float)) or lr <= 0:
+            raise TypeError("lr must be a positive number")
+        if step is not None and (not isinstance(step, int) or step <= 0):
+            raise TypeError("step must be a positive integer")
+        if not isinstance(beta1, (int, float)) or beta1 < 0 or beta1 >= 1:
+            raise TypeError("beta1 must be a float in the [0, 1] range")
+        if not isinstance(beta2, (int, float)) or beta2 < 0 or beta2 >= 1:
+            raise TypeError("beta2 must be a float in the [0, 1] range")
 
-        generated_image = tf.Variable(self.content_image, dtype=tf.float32)
-        optimizer = tf.optimisers.Adam(learning_rate=lr, beta_1=beta1,
-                                       beta_2
-        best_cost = float("inf")
-        best_image = None
-
-        for i in range(iterations):
-            with tf.GradientTape() as tape:
-                tape.watch(generated_image)
-
-            J_total, J_content, J_style = self.total_cost(generated_image)
-
-            gradients = tape.gradient(J_total, generated_image)
-            optimizer.apply_gradients([(gradients, generated_image)])
-
-            if J_total < best_cost:
-                best_cost = J_total
-                best_image = generated_image.numpy()
-
-            if step is not None and (i + 1) % step == 0:
-                print(f"Cost at iteration {i + 1}: {J_total.numpy()},
-                      content {J_content.numpy()}, style {J_style.numpy()}")
-
-    return best_image, best_cost
+        generated_image = None
+        cost = None
+        return generated_image, cost
