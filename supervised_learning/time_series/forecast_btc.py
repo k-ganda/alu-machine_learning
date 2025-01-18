@@ -16,7 +16,9 @@ y_train, y_test = labels[:split_idx], labels[split_idx:]
 # Create tf.data.Dataset
 def create_dataset(X, y, batch_size=32):
     dataset = tf.data.Dataset.from_tensor_slices((X, y))
-    return dataset.shuffle(len(X)).batch(batch_size).prefetch(tf.data.experimental.AUTOTUNE)
+    return dataset.shuffle(len(X)).batch(batch_size).
+    prefetch(tf.data.experimental.AUTOTUNE)
+
 
 train_dataset = create_dataset(X_train, y_train)
 test_dataset = create_dataset(X_test, y_test)
@@ -34,6 +36,7 @@ def create_model(input_shape):
     ])
     model.compile(optimizer='adam', loss='mse', metrics=['mae'])
     return model
+
 
 # Train model
 model = create_model(X_train.shape[1:])
