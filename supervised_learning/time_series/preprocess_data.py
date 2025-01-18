@@ -16,13 +16,13 @@ def preprocess_data(filepath, seq_len=24):
 
     # Resample data into hourly intervals
     data = data.resample('1H').agg({
-    'Open': 'first',
-    'High': 'max',
-    'Low': 'min',
-    'Close': 'last',
-    'Volume_(BTC)': 'sum',
-    'Volume_(Currency)': 'sum',
-    'Weighted_Price': 'mean'
+        'Open': 'first',
+        'High': 'max',
+        'Low': 'min',
+        'Close': 'last',
+        'Volume_(BTC)': 'sum',
+        'Volume_(Currency)': 'sum',
+        'Weighted_Price': 'mean'
     })
     # Normalize features
     scaler = (data - data.min()) / (data.max() - data.min())
