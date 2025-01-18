@@ -1,22 +1,16 @@
 def preprocess_data(filepath, seq_len=24):
     """
     Preprocess  BTC datasets for RNN training.
-    :param filepaths: List of paths to the datasets (e.g., [coinbase.csv, bitstamp.csv]).
     :param seq_len: Number of past hours to use for prediction.
     :return: Processed data and labels.
     """
     # Load and concatenate datasets
     dataframes = [pd.read_csv(filepath)]
     data = pd.concat(dataframes)
-
     # Handle missing values
-    
     data = data.fillna(method='ffill').fillna(method='bfill')
-
-
     # Convert timestamp to datetime
     data['Timestamp'] = pd.to_datetime(data['Timestamp'], unit='s')
-
     # Set timestamp as index
     data.set_index('Timestamp', inplace=True)
 
@@ -29,10 +23,7 @@ def preprocess_data(filepath, seq_len=24):
     'Volume_(BTC)': 'sum',
     'Volume_(Currency)': 'sum',
     'Weighted_Price': 'mean'
-})
-
-    
-
+    })
     # Normalize features
     scaler = (data - data.min()) / (data.max() - data.min())
 
@@ -44,4 +35,3 @@ def preprocess_data(filepath, seq_len=24):
         labels.append(scaler.iloc[i + seq_len]['Close'])
 
     return np.array(sequences), np.array(labels)
-  
