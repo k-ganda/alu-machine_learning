@@ -9,29 +9,26 @@ import numpy as np
 
 def absorbing(P):
     """
-    Determines whether a Markov chain is absorbing.
+    determines steady state probabilities
+    of a markov chain
 
-    P - square 2D numpy.ndarray: (n, n) transition matrix
-        - P[i, j] is the probability of transitioning from
-        state i to state j
-        - n is the number of states in the Markov chain
+    P - square 2D numpy.ndarray: (n, n) -transition matrix
+        - P[i, j] - probability of transitioning from
+    state i to state j
+        - n no. of states in the markov chain
 
-    Returns: True if it is absorbing, False otherwise
+    Returns: True if it is absorbing,
+        or False on failure
     """
-    if len(P.shape) != 2:
+    # absorbing states are states that have a probability of 1
+    # of transitioning to themselves
+    if type(P) is not np.ndarray or len(P.shape) != 2:
         return False
-    n1, n2 = P.shape
-    if n1 != n2 or type(P) is not np.ndarray:
+    n, n = P.shape
+    if n != P.shape[0]:
         return False
-
-    # Check if there is at least one absorbing state
-    absorbing_states = [
-        i for i in range(n1) if P[i, i] == 1 and np.all(P[i, :] == 0)
-    ]
-
-    # If no absorbing states are found, return False
-    if len(absorbing_states) == 0:
+    if np.sum(P, axis=1).all() != 1:
         return False
-
-    # Markov chain is absorbing if at least one absorbing state exists
-    return True
+    if np.any(np.diag(P) == 1):
+        return True
+    return False
