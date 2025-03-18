@@ -22,7 +22,12 @@ def sarsa_lambtha(env, Q, lambtha, episodes=5000, max_steps=100,
         gamma: The discount rate.
         epsilon: The initial threshold for epsilon greedy.
         min_epsilon: The minimum value that epsilon should decay to.
+<<<<<<< HEAD
         epsilon_decay: The decay rate for updating epsilon between episodes.
+=======
+        epsilon_decay: The decay rate for updating epsilon
+                        between episodes.
+>>>>>>> 7c7ba595d3c6b22b60b02266c5e2757b23a73290
 
     Returns:
         Q: The updated Q table.
@@ -37,7 +42,12 @@ def sarsa_lambtha(env, Q, lambtha, episodes=5000, max_steps=100,
             next_state, reward, done, _ = env.step(action)
             next_action = epsilon_greedy(Q, next_state, epsilon)
 
+<<<<<<< HEAD
             delta = reward + gamma * Q[next_state, next_action] - Q[state, action]
+=======
+            delta = reward + gamma * Q[next_state,
+                                      next_action] - Q[state, action]
+>>>>>>> 7c7ba595d3c6b22b60b02266c5e2757b23a73290
             E[state, action] += 1
 
             Q += alpha * delta * E
@@ -53,6 +63,10 @@ def sarsa_lambtha(env, Q, lambtha, episodes=5000, max_steps=100,
 
     return Q
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> 7c7ba595d3c6b22b60b02266c5e2757b23a73290
 def epsilon_greedy(Q, state, epsilon):
     """
     Applies epsilon-greedy policy to select an action.
